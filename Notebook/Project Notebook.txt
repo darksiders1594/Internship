@@ -1,0 +1,405 @@
+--------  Apache Maven  --------
+
+作用: 项目构建工具 管理项目中的jar包 https://archive.apache.org/dist/maven/maven-3/
+
+配置镜像
+
+maven.aliyun.com
+
+配置环境变量
+
+E:\project\APP\apache-maven-3.8.6\bin
+
+创建工程
+
+mvn archetype:generate -DgroupId=com.mycompany.app -DartifactId=my-app -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=1.4 -DinteractiveMode=false
+
+编译
+
+mvn compile
+
+测试
+
+mvn test
+
+清除
+
+mvn clean
+
+
+
+--------  Spring Initializr  --------
+
+https://start.spring.io/
+
+使用的包
+
+Spring Web: Spring MVC, Tomcat
+
+Spring Aspects: AOP, AspectJ
+
+Thymeleaf
+
+Spring Boot DevTools
+
+
+
+--------  Spring Boot  --------
+
+起步依赖
+
+自动配置
+
+端点监控
+
+
+
+--------  Tomcat  --------
+
+注: 在Spring Boot文档中可以找到相关配置类, 在IEDA中按CTRL + SHIFT + N 快速查找
+
+更改端口 -> application.properties
+
+server.port=8080
+
+更改项目路径
+
+server.servlet.context-path=/demo
+
+
+
+--------  HTTP  --------
+
+HyperText Transfer Protocol 用于传输HTML等内容的应用层协议
+
+规定了浏览器和服务器之间如何通信, 以及通信时的数据格式
+
+学习网站: https://developer.mozilla.org/zh-CN/docs/Web/HTTP
+
+
+
+--------  Spring MVC  --------
+
+三层架构: 表现层, 业务层, 数据访问层
+
+
+MVC: 一种设计模式, 将代码分为三个层次
+
+Model 模型层, View 视图层, Controller 控制层
+
+
+核心组件: DispatcherServlet 前端控制器
+
+
+以下为处理请求与响应的简单示例: 
+
+Request
+
+Request常用接口 HttpServletRequest
+
+获取Request方式 request.getMethod()
+
+获取Request路径 request.getServletPath()
+
+获取所有Request Header的key(若干行, 需要使用迭代器) request.getHeaderNames()
+
+->迭代器示例
+
+Enumeration<String> enumeration = request.getHeaderNames();
+
+while (enumeration.hasMoreElements()) {
+    String name = enumeration.nextElement();
+    String value = request.getHeader(name);
+}
+
+获取请求参数 request.getParameter(name: "code")
+
+
+Response
+
+Response常用接口 HttpServletResponse
+
+设置 response 数据类型 response.setContentType("text/html; charset=utf-8")
+
+获取输出流 PrintWriter writer = response.getWriter(); (writer.write("<h1>示例</h1>"))
+
+->注: 记得try catch, 且Java7 新增功能, 写入 try 小括号里, 可自动关闭输出流
+
+
+以下为处理请求与响应的进阶示例:
+
+1. 传参 (还有一种以路径传参的方式, 请参照@RequestMapping)
+
+@RequestParam(name = "", required = false, defaultValue = "")
+
+->此注解写在方法中的参数前
+
+1. name 的值表示 Request 请求的参数名, 其中的值会传递给方法中的参数
+
+2. required 表示这个值是否可以不传
+
+3. defaultValue 表示 required = false 情况下参数的默认值
+
+
+2. rescources 的使用
+
+static 中通常存放静态html, css, js等
+
+templates 中有动态的表达式, 通常存放网页模板
+
+
+3. ModelAndView 用于方法的返回类型 Model 和 View 类型给模板引擎处理
+
+->使用方式
+
+1. ModelAndView mav = new ModelAndView();
+
+2. mav.addObject(attrubuteName: "", attrubuteValue: "");
+
+3. mav.setViewName(""); 设置View的路径, 且 thymeleaf 默认为 html 文件, 无需后缀
+
+->简化 ModelAndView
+
+1. 返回类型不使用 ModelAndView, 而是 String, 这样需要 return View的路径
+
+2. 参数使用 Model model
+
+3. model.addAttrubute 使用方式与 addObject 相同
+
+
+4. thymeleaf 的语法
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">  这是 thymeleaf 声明, 使服务器知道这是一个模板
+
+<p th:text="${xxx}"></p> 变量名 xxx 对应了 mav.addObject 的 attrubuteName, text使用utext会包括转义字符
+
+<link rel="stylesheet" th:href="@{css/global.css}" /> 相对路径可以使用 th:href="@{/}" 的方式
+
+th:each="xxx:${}" 表示 for each 循环显示某标签, xxx为变量名
+
+
+th:if="${}" 判断条件
+
+-> $误报错解决方案
+
+File-settings-inspections 将 Thymeleaf 的 Expression... 提示取消对勾, 点击apply
+
+th:text="${#dates.format(map.post.createTime, 'yyyy-MM-dd HH:mm:ss')} 指定时间格式的工具
+
+th:each="${#numbers.sequence(page.from, page.to)}" 创造一个数组的工具
+
+<li th:class="|page-item ${page.current == 1 ? 'disabled':''}|"> |表示包含静态与动态
+
+
+响应JSON数据的示例 (常用于异步请求):
+
+JSON的作用  Java对象 -> JSON字符串 -> JavaScript对象
+
+@ResponseBody 记得使用这个注解, 否则会被当作 html 处理
+
+// Map类型 会被 @ResponseBody 以JSON字符串响应, 也可以再嵌套一个List类型, 响应多个Map
+public Map<String, Object> getXxx() {
+    Map<String, Object> xxx = new HashMap<>();
+    xxx.put("", "");
+    return xxx;
+}
+
+
+
+--------  Thymeleaf  --------
+
+模板引擎: 生成动态的HTML
+
+常用语法: 标准表达式 判断与循环 模板的布局
+
+
+模板缓存(开发时关闭, 上线时开启):
+
+spring.thymeleaf.cache=false
+
+
+
+--------  MyBatis  --------
+
+在 MySQL 中初始化一些表和数据用于测试
+
+source E:/project/demo/demo-init-sql/init_schema.sql; 建表脚本, 注意路径使用 '/'
+
+source E:/project/demo/demo-init-sql/init_data.sql; 导入测试数据
+
+
+MyBatis 的一些理论知识
+
+SqlSessionFactory: 用于创建 SqlSession 的工厂类
+
+SqlSeesion: MyBatis的核心组件, 用于向数据库执行SQL
+
+主配置文件: XML配置文件, 可以对 MyBatis 的底层行为做出详细的配置
+
+Mapper接口: 即 DAO(Data Access Object) 接口, 在 MyBatis 习惯称之为Mapper
+
+Mapper映射器: 用于编写SQL, 并将SQL和实体类映射的组件, 采用XML或注解均可实现
+
+
+导入jar包 (可能仍需要在IDEA手动连接数据库)
+
+MySQL Connector/J
+
+MyBatis Spring Boot Starter
+
+
+配置文件 application.properties
+
+# DataSourceProperties
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.datasource.url=jdbc:mysql://localhost:3306/demo?characterEncoding=utf-8&useSSL=false&serverTimezone=Asia?Shanghai
+spring.datasource.username=root
+spring.datasource.password=1594253369
+
+# 连接池的配置
+spring.datasource.type=com.zaxxer.hikari.HikariDataSource
+spring.datasource.hikari.maximum-pool-size=15              最大连接数
+spring.datasource.hikari.minimum-idle=5                    连接空闲时剩余数
+spring.datasource.hikari.idle-timeout=30000                判断连接是否空闲时所等待毫秒
+
+# MybatisProperties
+mybatis.mapper-locations=classpath:mapper/*.xml            映射文件的位置
+mybatis.type-aliases-package=pers.internship.demo.entity   实体类所在的package
+mybatis.configuration.useGeneratedKeys=true                自动生成主键
+mybatis.configuration.mapUnderscoreToCamelCase=true        让下划线命名和驼峰命名匹配
+
+
+entity 实体类: 由数据库表中的字段构成, 记得Getter Setter 或 Lombok
+
+
+Mapper 接口
+
+在 dao 层直接建立一个接口即可, 如XxxMapper, 之后使用 @Mapper 注解自动装配 bean
+
+->注解报错解决方案
+
+1. File-settings-inspections 将spring的提示设置为warning, 点击apply
+https://www.cnblogs.com/helf/p/11098268.html
+
+2. 在@mapper下添加@Reponsity, 因为@Mapper是Mybatis的注解, 作用是表明该类是Mapper, @Reponsity是Spring的注解, 将该类对象装配为 bean
+
+
+代码示例
+
+User selectById(int id);
+
+int insertUser(User user); 返回值 int 会被底层逻辑处理为行数
+
+int updateStatus(int id, int status); 返回值 int 会被底层逻辑处理为行数
+
+@param("") 用于给参数取别名, 若方法只有一个参数, 且在<if>使用, 必须取别名
+
+
+Mapper 配置文件(用于给接口生成实现类)
+
+1. 在 mapper 建立 user-mapper.xml
+
+2. xml 模板
+
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="pers.internship.demo.dao.UserMapper"> 记得确保这个路径正确
+
+    提前写好查询字段, 便于引用或修改
+    <sql id="selectFields">
+        id, username, password, salt, email
+    </sql>
+    sql可能会误报错, File -> Settings -> Editor -> Language Injections
+    setting-Language Injections->xml:iBatis3  双击点开 去掉sql|
+    
+
+    <select id="selectById" resultType="User"> id的值取方法名, resultType取返回类型
+        select <include refid="selectFields"></include>  这里的查询语句用到了上文的引用
+        from user
+        where id = #{id}  大括号中的变量名, 与方法传参的变量名一致
+    </select>
+
+    parameterType 的值取方法参数类型, keyProperty 指定变量的值会存放 insert 自动生成的主键
+    <insert id="insertById" parameterType="User" keyProperty="id">
+        insert into user ()
+        values (#{}, #{}) 由于主键是自增长, 无需写入values
+    </insert>
+
+    <select id="selectDiscussPosts" resultType="DiscussPost">
+        select <include refid="selectFields"></include>
+        from disscuss_post
+        where status != 2
+        <if test="userId!=0">
+            and user_id = #{userId}
+        </if>
+        order by type desc, create_time desc
+        limit #{offset}, #{limit}
+    </select>
+</mapper>
+
+
+
+--------  项目调试  --------
+
+private static final Logger logger = LoggerFactory.getLogger(xxx.class);
+
+# logger
+logging.level.pers.internship.demo=debug                   调整日志级别
+
+logging.file=D:/.../xxx.log                                将日志写入到文件
+
+
+
+--------  git  --------
+
+常用命令:
+
+git config --list  查看配置
+
+git config --global user.name "" 配置用户名
+
+git config --global user.email "" 配置邮箱
+
+git init 初始化(需 cd 到目标目录)
+
+git status 查看管理状态
+
+git add * 添加管理文件
+
+git commit -m '备注' 提交文件
+
+ssh-keygen -t rsa -C "darksiders1594@gmail.com" 生成密钥
+
+git remote add origin git@github.com:darksiders1594/Internship.git 在本地声明远程仓库, 别名origin
+
+git remote rm origin 删除声明
+
+git pull origin master 把本地仓库的变化连接到远程仓库主分支
+
+git pull --rebase origin master 把远程仓库的文件同步到本地
+
+git push -u origin master 上传代码到远程仓库
+
+git config --global http.postBuffer 524288000 更改推送大小限制
+
+git config --global http.sslVerify "false" 更改网络认证设置
+
+git config core.autocrlf false 换行符自动转换
+
+git config --global core.autocrlf false 换行符自动转换(全局)
+
+
+为 IDEA 配置 Git
+
+File -> Settings -> Version Control -> Git -> E:\project\APP\Git\bin\git.exe
+
+选中 project -> VCS -> Import into Version Control -> Create Git...
+
+
+
+
+
+
+

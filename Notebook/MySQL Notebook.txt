@@ -1,0 +1,694 @@
+--------  MySQL安装与配置环境变量  --------
+
+https://dev.mysql.com/downloads/installer/ -> msi
+
+Server only -> next
+
+向系统变量Path追加 C:\Program Files\MySQL\MySQL Server 5.7\bin
+
+
+如果是解压缩包形式, 请参照如下方式(前提是搞完my.ini)
+
+1. cd C:\Program Files\MySQL\MySQL Server 5.7\bin 也就是 bin 所在的目录
+
+2. mysqld --initialize --console 记得保存好 root 的临时密码
+
+3. mysqld install
+
+4. net start mysql
+
+5. alter user root@localhost identified by '这里是你修改的密码'; (记得先用临时密码登录)
+
+
+
+--------  一些专有名词  --------
+
+Create    增加数据
+
+Retrieve  查找数据
+
+Update    更新数据
+
+Delete    删除数据
+
+CRUD  增删改查
+
+Structured Query Language(SQL) 结构化查询语言
+
+Data Definition Language(DDL) 数据定义语言 create alter drop show
+
+Data Manipulation Language(DML) 数据操纵语言 insert update delete select
+
+Data Control Language(DCL) 数据控制语言
+
+column: 列(COL)
+
+数据冗余: 有些数据是可以推断出来的, 却仍然建了个字段去存, (但有时候是有必要的, 可以提高查询性能)
+
+关系: 两张表的共有字段去确定数据的完整性
+
+
+
+--------  数据模型  --------
+
+层次模型: 利于查询(但查询子节点时必须通过双亲结点), 不利于增加和删除数据, 且事物的很多联系是非层次性的
+
+网状模型: 利于更新, 但结构复杂, 增加和删除会牵动太多数据, 不利于维护
+
+关系模型: 查询效率不高, 需要进行优化
+
+
+
+--------  数据库设计思维 --------
+
+注意不同表实体之间的关系, 几对几
+
+第一范式: 确保每一字段的原子性 (如姓名可分成名和姓)
+
+第二范式: 非键字段必须依赖于键字段 (不属于这张表的东西不要乱放)
+
+第三范式: 消除传递依赖 (也就是尽量避免数据冗余, 删除多余字段)
+
+实际开发应根据项目实际需求
+
+
+
+--------  命令语句  --------
+
+MySQL服务器的启动与停止
+
+net start mysql57
+
+net stop mysql57
+
+
+data文件的初始化
+
+cd C:\Program Files\MySQL\MySQL Server 5.7
+
+mysqld --initialize-insecure --user=root
+
+
+连接数据库
+
+mysql -u root -p
+
+
+清屏 cls
+
+
+退出 quit exit \q
+
+
+
+--------  Initial Database  --------
+
+information_schema: 被称为数据字典, 主要存储schema信息(元数据)
+
+mysql: 主要存储数据库用户、权限等信息
+
+performance_schema: 被称为性能字典, 主要用于收集数据库服务器性能参数
+
+sys: 通过视图将information_schema与performance_schema结合, 使检索元数据更加便捷
+
+
+
+--------  SQL语句(database chapter)  --------
+
+查看现有数据库
+
+show databases;
+
+创建数据库
+
+create database if not exists `` charset=gbk/utf8;(注: ``符号可以强制数据库以关键字为库名)
+
+删除数据库
+
+drop database if exists ``;
+
+查看数据库创建方式
+
+show create database ``;
+
+修改数据库字符编码
+
+alter database `` charset=gbk/utf8;
+
+查看MySQL默认字符集
+
+show variables like '%char%';
+show variables like 'character_set_%';
+
+
+
+--------  MySQL5.7.30修改默认字符集  --------
+
+使用配置文件更改
+
+C:\ProgramData\MySQL\MySQL Server 5.7 -> my.ini
+
+[mysql]
+default-character-set=utf8
+
+[mysqld]
+default-storage-engine=INNODB
+
+collation-server=utf8_general_ci
+
+character-set-server=utf8
+
+[client]
+default-character-set=utf8
+
+my.ini -> C:\Program Files\MySQL\MySQL Server 5.7
+
+使用语句更改
+
+set character_set_client/server/...=gbk;
+
+
+
+--------  table  --------
+
+1. 表的列被称为字段/属性 (说白了就是事物共性的抽象)
+
+2. 表的行被称为记录/实体 (说白了就是一条数据, 实际存在的)
+
+3. 一些关键字(用于表的创建)
+
+auto_increment 自动增长
+
+primary key 主键(可设置多个作为组合键)
+
+foreign key 外键(实际开发会提高耦合, 尤其并发项目, 禁止外键)
+
+外键创建: foreign key (字段) references `表名`(字段名) on delete set null on update cascade
+
+置空操作: 某一主键的id销毁时, 其关联的外键 -> NULL, 但仍保留记录 (置空用于删除)
+
+级联操作: 某一主键的id销毁/更新时, 其关联的外键 -> 连带记录一起销毁/更新 (级联用于更新)
+
+multiply 可重复
+
+unique 唯一键
+
+comment '' 注释
+
+not null 不能为空
+
+default '' 默认值
+
+engine=innodb 引擎(写在小括号后面)
+
+varchar(30) 早期括号中的数字代表字节, 现在代表字符
+
+int(11) 括号中的数字为显示宽度, 加入zerofill后, 数值小于此宽度时自动补0, 大于此宽度时按照新宽度显示
+
+float(5,1) 括号中的数字表示总位数为5, 小数位数为1(超过位数将精度丢失, 具体参照二进制表示小数)
+
+UNSIGNED 无符号(写在数据类型后面)
+
+decimal(5,1) 定点型
+
+
+
+--------  SQL语句(table chapter)  --------
+
+使用数据库
+
+use ``;
+
+查看现有的表
+
+show tables;
+
+创建表
+
+create table if not exists ``(id int, name varchar(30));
+
+查看表创建方式
+
+show create table ``;
+
+查看表的信息
+
+desc ``;
+
+删除表
+
+drop table if exists ``, ``;(删除多个表可用逗号隔开)
+
+修改表名
+
+alter table `表名` rename to `表名`;
+
+添加表的字段
+
+alter table `表名` add `字段名` varchar(30) after `字段名`; (after表示排列在某字段后面)
+
+alter table `表名` add `字段名` varchar(30) first; (first表示排列在最前)
+
+修改表的字段约束
+
+alter table `表名` add primary key (`字段名`);
+
+alter table `表名` drop primary key;
+
+alter table `表名` drop index (`字段名`);
+
+删除表的字段
+
+alter table `表名` drop `字段名`;
+
+修改表的字段
+
+alter table `表名` change `字段名` `字段名` int(11);
+
+修改表的字段类型
+
+alter table `表名` modify `字段名` varchar(30);
+
+
+
+--------  SQL语句(data chapter)  --------
+
+插入数据
+
+insert into `表名` (id, name) values (1, 'Jerry');(多条数据可用逗号分隔, 若省略字段, 则需按默认顺序添加)
+
+删除数据
+
+delete from `表名` where id=1;(where以及其后的条件请灵活使用)
+
+清空表中数据
+
+truncate table `表名`;
+
+更新数据
+
+update `表名` set name='Jerry' where id=1 or xxx='123';(set后请灵活使用逗号)
+
+查询数据
+
+select * from `表名`;(请灵活使用 * 或字段)
+
+
+
+--------  单表查询  --------
+
+dual 这是一张默认的伪表
+
+as 可以用于取别名
+
+between and 个人理解: `Col` between 1 and 10 相当于 `Col` >= 1 and `Col` <= 10 (注意等于号, 而且可以加not)
+
+in\not in('', '', ...) (个人理解: 相当于or)
+
+is null/is not null 可以用于查询空或非空的数据
+
+like '' 模糊查询(%代表多个字符, _代表一个字符)
+
+order by `Col` asc/desc (asc表示升序排序, desc则是降序)
+
+limit 0,5  可以限制查询的记录条数
+
+distinct\all 去重(平时不去重时默认会有all)
+
+group by `Col` 分组查询 (注意查询的字段一定要有聚合函数和分组所需字段, 且可添加asc/desc)
+
+group_concat(Col) 可以将分组的数据聚合显示
+
+having 可以在查询结果之后的表中进行筛选
+
+format(X,D) 查询结果保留小数位数
+
+聚合函数: select * sum/avg/max/min/count(Col) from `表名`;(注意count(*)的使用)
+
+1> 任何情况下 SELECT COUNT(*) FROM tablename 是最优选择
+
+2> 尽量减少 SELECT COUNT(*) FROM tablename WHERE COL = 'value' 这种查询
+
+3> 杜绝 SELECT COUNT(COL) FROM tablename 的出现
+
+
+
+--------  多表查询  --------
+
+笛卡尔积: 说白了就是查询多张表的时候, 把每个实体排列组合
+
+union/union all 联合查询, 要查询的结果来自于多个表，且多个表没有直接的连接关系，但查询的信息一致时(默认去重)
+
+`表名` inner join `表名` on `tablename.Col` = `tablename.Col`; 内连接(要有公共字段)
+
+left join 左连接(和内连接不同的是, 左表的数据会全部显示, 右表没有数据与其对应则为null)
+
+right join 右连接(与左连接相反, 以右表为基准)
+
+cross join 交叉连接(返回的是笛卡尔积, 用where确定公共字段就相当于内连接)
+
+natural join 自然连接(自动根据公共字段连接, 且也可使用左右, 没有公共字段则返回笛卡尔积)
+
+using(Col) 等价于join操作中的on(但注意两表的Col要一致)
+
+
+
+--------  子查询  --------
+
+select * from `表名` where `Col` in/not in (select `Col` from `表名` where ...);
+
+select * from `表名` where exists/not exists (select `Col` from `表名` where ...);
+
+select * from `表名` where `Col` 运算符 any/all (select `Col` from `表名` where ...);
+
+就是以括号里查询语句的结果做返回值, 用来给括号外的语句判定
+
+
+
+--------  视图  --------
+
+视图的定义:
+
+视图（view）是一种虚拟存在的表，视图中的数据并不在数据库中实际存在，行和列数据来自定义视图的查询中使用的表，并且是在使用视图时动态生成的。
+
+通俗的讲，视图只保存了查询的SQL逻辑，不保存查询结果。所以我们在创建视图的时候，主要的工作就落在 创建这条SQL查询语句上。
+
+
+视图的作用:
+
+1. 简单：视图不仅可以简化用户对数据的理解，也可以简化他们的操作，那些被经常使用的查询可被定义为视图，从而使得用户不必为以后的操作每次指定全部的条件。
+
+2. 安全：数据库可以授权，但不能授权到数据库特定行和特定的列上，通过视图用户只能查询和修改他们所能见到的数据。
+
+
+相关语句:
+
+创建视图
+
+create view `视图名` as 查询语句;(可指定试图算法algorithm = undefined/merge/temptable)
+
+修改视图
+
+alter view `视图名` as 查询语句;
+
+查看视图
+
+desc `视图名`;
+
+删除视图
+
+drop view `视图名`;
+
+查看视图的创建方式
+
+show create view `视图名`;
+
+查看所有视图语法格式
+
+show table status where comment='view' \G
+
+
+
+--------  事务  --------
+
+注: 数据库引擎是Innodb才能使用事务
+
+事务的四个特性(ACID):
+
+原子性(Atomicity): 一个事务是一个不可再分割的整体，要么全部成功，要么全部失败
+
+一致性(Consistency): 一个事务可以让数据从一种一致状态切换到另一种一致性状态
+
+隔离性(Isolution): 一个事务不受其他事务的影响，并且多个事务彼此隔离
+
+持久性(Durability): 一个事务一旦被提交，在数据库中的改变就是永久的，提交后就不能再回滚
+
+
+相关语句:
+
+开启事务
+
+start transaction;
+
+update `表名` set `Col` = `Col` - 100 where `Col` = 1;
+
+update `表名` set `Col` = `Col` + 100 where `Col` = 2;
+
+回滚事务
+
+rollback;
+
+提交事务
+
+commit;
+
+设置回滚点
+
+savepoint 回滚名;
+
+回滚事务到回滚点
+
+rollback to 回滚名;
+
+
+
+--------  索引  --------
+
+优点: 利于查询
+
+缺点: 会使增删改的效率变低, 且占空间
+
+
+索引的分类: 
+
+1. 主键索引
+
+2. 唯一索引 (和主键索引的区别就是可以为null)
+
+3. 联合索引
+
+4. 普通索引
+
+5. 全文索引
+
+
+相关语句:
+
+创建索引
+
+create index 索引名 on `表名`(Col);
+
+create unique index 索引名 on `表名`(Col);
+
+更新索引
+
+alter table `表名` add index 索引名 (Col);
+
+删除索引
+
+drop index 索引名 on `表名`;
+
+
+
+--------  存储过程  --------
+
+delimiter // 可以更改曾经以分号结尾的语法
+
+
+创建存储过程代码示例(可以和事务一起用):
+
+create procedure 过程名()
+
+begin
+
+update...;
+
+end //
+
+调用存储过程
+
+call 过程名();
+
+删除存储过程
+
+drop procedure 过程名();
+
+查看存储过程的创建
+
+show create procedure 过程名();
+
+
+
+--------  规范约束  --------
+
+表和字段约束
+
+1. 表示是或否 字段名最好给is_前缀, 类型unsigned tinyint
+
+2. 字段名必须是小写字母, 不能以数字开头, 分割单词下划线隔开
+
+3. 表名不能以复数命名
+
+4. 主键索引名一般以px_为前缀, 唯一键则是uk_, 普通键idx_
+
+5. 小数使用定点型decimal
+
+6. 字符串很少时直接使用char
+
+7. 一个表里至少要有三个字段 id create_time update_time 其中id必须是主键, 类型为bigint, 其他两个为datatime
+
+8. 单表容量超过2G最好分库
+
+
+索引约束
+
+1. 业务和流程上具有唯一特性的字段, 应当建立索引
+
+2. 不允许两张以上的表关联查询, 且JOIN两边的数据类型必须一致
+
+3. 关联查询的字段应该有索引
+
+4. 对varchar()建立索引时要制定索引长度
+
+
+SQL开发约束
+
+1. 不要使用count(Col, ...)去代替count(*)
+
+2. 不要使用等于号判断null值, 有语句为is null, 有函数为isnull()
+
+3. 不要使用外键和级联(并发项目谨记, 这个操作拿到应用层去解决)
+
+4. 实际开发不允许使用存储过程
+
+5. 数据更新的时候, 先使用查询看一下
+
+6. in 操作能避免就避免
+
+7. utf8作为国际项目编码
+
+
+其他约束
+
+1. 尤其是ORM框架 不要使用 * 作为查询
+
+2. POJO类的布尔类型命名不可以加is_前缀
+
+
+
+--------  函数  --------
+
+rand() 随机(可用于order by来随机排序)
+
+ceil() 向上取整
+
+floor() 向下取整
+
+round() 四舍五入
+
+truncate(0.001,2) 截取数字
+
+
+ucase('') 转换大写
+
+lcase('') 转换小写
+
+left('', 2) 从左开始截取两个字符
+
+right('', 2) 从右开始截取两个字符
+
+substring('',1,4) 按索引截取字符
+
+concat('', '') 拼接字符串
+
+
+now() 获取当前时间
+
+unix_timestamp() unix时间戳
+
+year/month/day(now()) 截取当前时间的年/月/日
+
+
+sha('') 加密字符串
+
+
+
+--------  数据类型  --------
+
+数值类型
+
+TINYINT         1 Bytes (-128, 127), (0, 255)
+
+SMALLINT        2 Bytes (-32768, 32767), (0, 65 535)
+
+MEDIUMINT       3 Bytes (-8 388 608, 8 388 607), (0, 16 777 215)
+
+INT or INTEGER  4 Bytes (-2 147 483 648, 2 147 483 647), (0, 4 294 967 295)
+
+BIGINT          8 Bytes (-9 223 372 036 854 775 808, 9 223 372 036 854 775 807)
+            无符号范围: (0, 18 446 744 073 709 551 615)
+
+FLOAT           4 Bytes (-3.402 823 466 E+38, -1.175 494 351 E-38), 
+                        0, (1.175 494 351 E-38, 3.402 823 466 351 E+38)
+            无符号范围: 0, (1.175 494 351 E-38, 3.402 823 466 E+38)
+
+DOUBLE          8 Bytes (-1.797 693 134 862 315 7 E+308,-2.225 073 858 507 201 4 E-308), 
+                        0, (2.225 073 858 507 201 4 E-308, 1.797 693 134 862 315 7 E+308)
+            无符号范围: 0, (2.225 073 858 507 201 4 E-308，1.797 693 134 862 315 7 E+308)
+
+DECIMAL     对DECIMAL(M,D) 所占大小为M + 2 范围取决于M和D的值
+
+
+字符串类型
+
+CHAR            0-255 bytes             定长字符串
+
+VARCHAR         0-65535 bytes           变长字符串(效率可能不如char, 但空间灵活)
+
+TINYBLOB        0-255 bytes             不超过 255 个字符的二进制字符串
+
+TINYTEXT        0-255 bytes             短文本字符串
+
+BLOB            0-65 535 bytes          二进制形式的长文本数据
+
+TEXT            0-65 535 bytes          长文本数据
+
+MEDIUMBLOB      0-16 777 215 bytes      二进制形式的中等长度文本数据
+
+MEDIUMTEXT      0-16 777 215 bytes      中等长度文本数据
+
+LONGBLOB        0-4 294 967 295 bytes   二进制形式的极大文本数据
+
+LONGTEXT        0-4 294 967 295 bytes   极大文本数据
+
+
+日期和时间类型
+
+DATE        3 bytes     1000-01-01/9999-12-31     YYYY-MM-DD    日期
+
+TIME        3 bytes     '-838:59:59'/'838:59:59'  HH:MM:SS      时间或持续时间
+
+YEAR        1 bytes     1901/2155                 YYYY          年份
+
+DATETIME    8 bytes     1000-01-01 00:00:00/9999-12-31 23:59:59	YYYY-MM-DD HH:MM:SS 日期和时间
+
+TIMESTAMP   4 bytes     1970-01-01 00:00:00/2038-1-19 11:14:07  YYYYMMDD HHMMSS	时间戳(北京时间)
+                        结束时间是2038年第 2147483647 秒, 格林尼治时间 2038年1月19日 凌晨 03:14:07
+
+
+布尔类型
+
+boolean true = 1, false = 0
+
+
+枚举类型
+
+enum('', '', ...)   表示仅可取所包含的值(可采用索引方式 1 2 3 ...)
+
+
+集合类型
+
+set('', '', ...)   表示仅可取所包含的值(但是可以选择多个, 且索引为1 2 4 8 ...)
+
+
+

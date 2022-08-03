@@ -1,0 +1,170 @@
+--------  Inversion of Control (控制反转 IoC)  --------
+
+概念: 控制反转是面向对象的一种设计模式, 一种思想
+
+
+技术描述: 
+
+一般情况下, Class A 用到 Class B 的对象时, 通常直接使用Class B的构造器
+
+而控制反转思想则是, 在Class A 建立一个引用, 由外部将Class B的对象注入进来
+
+
+技术优点: 
+
+降低了耦合, 可以更好的专注于实现业务功能, 和单元测试
+
+
+示例: 
+
+private Test test = new TestImpl(); // 一般情况, 对象被限定在了TestImpl()
+
+
+private Test test; // 控制反转设计模式
+
+public void setTest(Test test) {
+    this.test = test;
+}
+
+
+
+--------  Spring Framework -> IoC Container  --------
+
+概念: Ioc容器, 是Spring实现控制反转思想的一种方式
+
+
+一些名词的定义:
+
+bean 对象
+
+
+1. 基于 XML 的配置
+
+配置文件: 
+
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="..." class="...">  
+        <property name="" value=""/>
+        <property name="" ref=""/>
+
+        <property name="">
+            <array>
+                <value></value>
+            </array>
+        </property>
+        <!-- collaborators and configuration for this bean go here -->
+    </bean>
+
+</beans>
+
+使用容器:
+
+// create and configure beans
+ApplicationContext context = new ClassPathXmlApplicationContext("xxx.xml");
+
+// retrieve configured instance
+Test test = context.getBean("test", Test.class);
+
+
+
+--------  Spring Boot  --------
+
+注解篇:
+
+@SpringBootApplication  放在class前, 表示当前class为配置文件, 会扫描当前package的所有bean
+
+-> 有以下注解的bean才会被扫描
+
+1. @Controller 请求处理组件常用注解
+
+2. @Service 业务组件常用注解
+
+3. @Repository 数据库访问组件常用注解
+
+4. @Component 通用注解, @Controller, @Service, @Repository都是基于此注解实现
+
+
+@RequestMapping(path = "", method = RequestMethod.GET)
+
+-> 参数功能
+
+1. 映射URL路径, 将http的请求地址映射到 controller 类和方法
+
+2. 指定请求类型 一般获取数据用GET, 提交数据用POST
+
+3. path 中可以使用/{xxx} 表示一个变量, 也就是可变路径, xxx为变量名, 参数为路径名
+
+-> 如何得到这个可变路径呢?
+
+1. 在方法中的参数前使用@PathVariable("xxx")注解
+
+2. 此注解会将 Request 中变量名为 xxx 的值传递给方法中的参数
+
+
+@ResponseBody 将controller方法返回的对象转换为指定的格式, 写入response对象的body区
+
+
+@ContextConfiguration(classes = xxxApplication.class) 放在class前, 表示引用其他class为配置文件
+
+-> 当class使用此注解时, 通常还会实现ApplicationContextAware接口
+
+1. 实现此接口时会重写setApplicationContext方法, 传递一个bean容器
+
+2. 使用成员变量 private ApplicationContext applicationContext; 记录下传递的容器
+
+3. 使用 Test test = applicationContext.getBean(Test.class) 从容器中获取bean
+
+-> 假设Test是一个接口, 那么若有多个实现类呢? 上述方法会获取哪个bean呢?
+
+1. @Primary 此注解放在Test接口的实现类前, 表明当前实现类为最高优先级
+
+2. @Repository("") 此注解放在Test接口的实现类前, 可以为bean命名
+
+3. 使用 Test test = applicationContext.getBean(name: "", Test.class) 从容器中获取bean
+
+-> 有没有更智能的方法?
+
+1. @Autowired 此注解放在变量声明之前, 会自动获取bean给当前变量
+
+2. 也就是 private Test test 即可
+
+3. @Qualifier("") 此注解放在变量声明之前, 等同于.getBean(name: "", Test.class)
+
+4. @Autowired, @Qualifier("") 也可以放在构造器或setter方法之前
+
+
+@PostConstruct 此注解写在方法前, 当容器初始化时会调用此方法(在构造器之后)
+
+@PreDestory 此注解写在方法前, 当容器销毁对象之前会调用此方法
+
+
+@Scope("singleton"/"prototype") 此注解写在class前, 决定容器是否对bean采用单例模式
+
+
+@Configuration 此注解写在class前, 表示当前 class 为配置类(一般 main 才会用@SpringBootApplication)
+
+-> 如何引用第三方的 class 呢?
+
+1. @Bean 注解写在方法前, 方法返回的对象会被装配到容器里
+
+2. 代码示例, 这里的方法名就是bean的名字
+
+public SimpleDataFormat simpleDataFormat() {
+    return new SimpleDataFormat(pattern: "yyyy-MM-dd HH:mm:ss");
+}
+
+
+
+
+
+
+
+
+
+

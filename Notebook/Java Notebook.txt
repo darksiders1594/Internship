@@ -1,0 +1,230 @@
+--------  配置环境变量  --------
+
+1. 新建系统变量: JAVA_HOME
+
+路径: JDK安装路径
+
+2. 在系统变量Path后面追加
+
+%JAVA_HOME%\bin
+
+%JAVA_HOME%\jre\bin
+
+3. 新建系统变量: CLASSPATH
+
+路径: .;%JAVA_HOME%\lib\dt.jar;%JAVA_HOME%\lib\tools.jar
+
+4. 验证
+
+javac -version
+
+
+
+--------  一些专有名词  --------
+
+JDK 开发工具包(Java Development Kit)
+
+JRE 运行环境(Java Runtime Environment)
+
+JVM 虚拟机(Java Virtual Machine)
+
+.class 字节码文件
+
+类当中的变量和方法都总称为: 属性(共性/特性)
+
+类当中的变量称为: 成员变量(它们是类的重要组成部分)
+
+类当中的方法称为: 行为
+
+方法的重载: 方法名相同, 参数的个数或类型不同
+
+
+
+--------  导入jar  --------
+
+project name -> new -> Directory -> lib -> .jar
+
+
+
+--------  Lombok  --------
+
+安装:
+
+File -> Settings -> Plugins && maven repository -> lombok.jar
+
+报错解决:
+
+1. Required IntelliJ Configuration In your project
+
+File  -> Settings -> Build, Execution, Deployment -> Compiler -> Annotation Processors
+
+Click Enable Annotation Processing
+
+2. Afterwards you might need to do a complete rebuild of your project via
+
+Build -> Rebuild Project
+
+
+
+--------  OOP封装  --------
+
+Getter and Setter方法示例:
+
+private type value;
+
+public type getValue() {
+    return this.value;
+}
+
+public void setValue(type value) {
+    this.value = value;
+}
+
+Getter and Setter静态方法示例:
+
+private static type value;
+
+public static type getValue() {
+    return Class.value;
+}
+
+public static void setValue(String value) {
+    Class.value = value;
+}
+
+IDEA创建Getter and Setter快捷键: alt + insert
+
+Lombok注解: @Getter @Setter
+
+
+
+--------  toString()  --------
+
+IDEA创建toString()重写快捷键: alt + insert
+
+Lombok注解: @ToString || @Data(这个范围更广)
+
+
+
+--------  构造方法(Constructor 构造器)  --------
+
+private type value;
+
+public Test() {
+
+}
+
+public Test(type value) {
+    this.value = value;
+}
+
+IDEA创建Constructor快捷键: alt + insert
+
+
+
+--------  单例设计模式  --------
+
+如: 地球只有一个
+
+public class Earth {
+
+    private static Earth earth = new Earth();
+
+    private Earth() {
+
+    }
+
+    public Earth getEarth() {
+        return earth;
+    }
+
+}
+
+
+
+--------  垃圾回收机制  --------
+
+System.gc(); (仅作了解, 通常会自动回收)
+
+
+
+--------  继承(extends)  --------
+
+Java不支持多继承(为了简化JVM的绑定规则)
+
+Object是所有类的父类
+
+final类不可以被继承(引申: final变量不可以更改, 且注意格式大写ctrl + shift + U, 多个词用下划线隔开)
+
+方法重写:
+
+可使用super.method();的方式继续使用父类的方法
+
+final方法不可以被重写
+
+IDEA创建@Override快捷键: alt + insert
+
+子类使用构造方法:
+
+public Test() {
+
+}
+
+public Test(type value) {
+    super(value);
+}
+
+
+
+--------  访问权限修饰符  --------
+
+默认: 禁止不同package的类访问, 与继承无关
+
+public: 向一切开放
+
+protected: 禁止不同package的类访问, 除非当中的类继承于此
+
+private: 仅对当前类开放
+
+
+
+--------  抽象(abstract)  --------
+
+含义: 事物的共性(个人理解)
+
+抽象类不可以创建对象
+
+抽象方法被子类继承时强制重写(alt + enter)
+
+
+
+--------  接口(Interface)  --------
+
+含义: 对行为进行抽象(个人理解)
+
+接口可以多继承(因为不会增加JVM的绑定机制和复杂度)
+
+implements 实现
+
+匿名内部类:
+
+Interface interface = new Interface() {
+    @Override
+    public type method() {
+    }
+};
+
+
+
+--------  多态  --------
+
+向上转型: Animals animal = new Dogs();
+
+向下转型: Dogs dog = (Dogs)animal;
+
+
+--------  IO 流  --------
+
+FileInputStream/FileOutputStream
+
+BufferedInputStream/BufferedOutputStream

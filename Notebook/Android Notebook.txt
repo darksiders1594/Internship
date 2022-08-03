@@ -1,0 +1,227 @@
+容器视图:
+
+LinearLayout 线性布局 {
+
+    android:orientation 特有的属性 表示方向
+    android:orientation="horizontal" 会使子控件水平排列
+    android:orientation="vertical" 会使子控件垂直排列
+    android:layout_weight 表示子控件在整个页面方向的占比
+
+}
+
+RelativeLayout 相对布局 {
+
+    android:layout_(below/above/toLeftOf/toRightOf) 表示控件间的相对位置
+    android:layout_center(InParent/Horizontal/Vertical) 表示控件相对整个容器的位置
+    android:layout_align(Bottom/Top/...) 表示控件间的对齐
+    android:layout_alignParent(Bottom/Top/...) 表示控件与整个容器间的对齐
+
+}
+
+FrameLayout 帧布局 {
+
+    android:layout_gravity 表示控件在整个容器的位置(帧布局排列是逐层的, 通常会使用这个属性来占位)
+
+}
+
+ConstraintLayout 约束布局
+
+ScrollView 滚动布局
+
+
+
+控件:
+
+TextView {
+
+    android:textColor
+    android:textStyle
+    android:textSize
+    android:typeface 字体
+    android:textAllCaps 全部大写
+    android:singleLine 等同于 android:maxLines=1  单行显示
+    android:maxLength 限制字符长度
+    android:maxEms 限制文本宽度
+    android:maxLines 限制行数
+    &#12288 中文全角占位符 (详情搜索textview空格占位符)
+    android:ellipsize="end/start/none/marquee" 文字超出宽度时的省略方案(需要setSelected(true))
+
+}
+
+EditText {
+
+    android:drawable(Left/Right/Top/Bottom) 加入图片
+    android:hint 加入提示内容
+    android:inputType="" 设置输入文本风格
+
+}
+
+Button {
+
+    android:onClick
+    OnClickListener 一个接口
+    setOnClickListener(new ...) 设置点击事件监听
+    Toast.makeText(context: MainActivity.this, resld: "内容", Toast.LENGTH_SHORT/LONG).show(); 弹出信息
+    int id = view.getId(); 用ID判断点击的是哪一个Button
+    android:textAllCaps 全部大写
+
+}
+
+ImageView {
+
+    android:src 资源路径(如@drawable/... 可以定位到一张图片)
+    android:scaleType 图片缩放
+
+}
+
+CheckBox 勾选框
+
+RadioButton 圆形勾选框(常与RadioGroup共用)
+
+
+
+通用属性:
+
+android:visibility 控件可见性
+
+android:padding 控件边框与自身内容的间距
+
+android:margin 控件之间的间距
+
+android:gravity 内容在控件中的位置
+
+dp sp xp 表示大小的单位 (其中dp用于控件 sp用于字体 xp是像素大小会因设备差异而产生不同的视觉效果)
+
+
+
+Logcat:
+
+Log.v/d/...(tag: "", msg: ""); 打印日志
+
+
+
+res:
+
+getResources().getStringArray(R.array....); 这是一个获取字符串数组资源的示例
+
+#FF FF FF FF (透明度 R G B) 16进制 256
+
+<dimen name=""> </dimen> 尺寸资源
+
+shape drawable资源中Root element的一个值
+
+android:shape="rectangle" 矩形示例
+
+<stroke android:color="" android:width=""/> 自定义图片的描边
+
+<corners android:radius=""/> 自定义图片的边角弧度
+
+selector drawable资源中Root element的一个值
+
+<item android:state_pressed="true" android:drawable="" /> 按钮被点击时颜色取值的示例
+
+<style name="" parent="Theme.AppCompat"> </style> 继承默认主题(.Bridge)
+
+<item name="android:layout_height"> </item> 在style中定义一个通用页面高度的示例
+
+
+
+一些方法:
+
+getSupportActionBar().setTitle(""); 设置标题
+
+TextUtils.equals() 对比两个文本是否相等 (详情还可以参照JAVA字符串equals方法)
+
+
+
+Acticity生命周期:
+
+onCreate() 页面创建
+
+onStart() 页面可见 -> onNewIntent()
+
+onResume() 页面可交互
+
+onPause() 页面不可交互
+
+onStop() 页面不可见 -> onRestart()
+
+onDestory() 页面销毁
+
+
+
+Acticity显式跳转:
+
+public void ...(View view) {
+
+    Intent intent = new Intent(packageContext: .this, .class);  这个方法用于实现Acticity跳转
+    startActivity(intent);
+
+    intent.setClass( .this, .class); 这是另一种传参的方法
+
+    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP); 这是在代码中加入启动模式的方法
+    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK); 必须与CLEAR_TOP共用
+
+    intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+}
+
+
+
+Acticity隐式跳转:
+
+<intent-filter>
+    <action android:name=""/> 自定义跳转页面
+    <category android:name="android.intent.category.DEFAULT"/>
+</intent-filter>
+
+public void ...(View view) {
+
+    Intent intent = new Intent();
+    intent.setAction("");
+    intent.addCategory(Intent.CATEGORY_DEFAULT); 默认含有此语句
+
+    intent.setData(Uri.parse("")); 传送网址数据的示例    
+    intent.setType("image/*"); 跳转相册时的示例
+
+    startActivity(intent);
+
+}
+
+
+
+Acticity启动模式:
+
+android:launchMode="standard"  默认启动模式
+
+android:launchMode="singleTask"  栈内复用
+
+android:launchMode="singleTop"  栈顶复用
+
+android:launchMode="singleInstance"  单例模式
+
+
+
+系统终端:
+
+adb shell dumpsys activity | findstr (package name) 查看任务栈 (将Sdk\platform-tools的绝对路径添加到Path)
+
+
+
+对话框:
+
+public void popDialog(View view) {
+
+    AlertDialog.Builder builder = new AlertDialog.Builder(.this);
+
+    builder.setTitle("");
+    builder.setMessage("");
+
+    builder.setNegativeButton(text:"", new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which) {
+
+        }
+    });
+
+    builder.setPositiveButton(text:"", listener:null);
+}
