@@ -23,6 +23,8 @@ mybatis-spring-boot-starter 2.2.2
 
 lombok 1.18.24
 
+spring-boot-starter-mail 2.7.2
+
 初始化:
 
 https://start.spring.io/

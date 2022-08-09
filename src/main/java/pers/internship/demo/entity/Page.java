@@ -1,13 +1,14 @@
 package pers.internship.demo.entity;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 /**
  * 该实体类用于封装有关分页的信息
  */
 @Getter
+@ToString
 public class Page {
 
     // 当前页码
