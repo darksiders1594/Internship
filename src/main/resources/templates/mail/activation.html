@@ -9,11 +9,18 @@
 	<div>
 		<p>
 			亲爱的 <b th:text="${username}"></b>
+
 		</p>
 		<p>
-			感谢您注册我的网站作品, 这是一封激活邮件, 请点击
-			<a href="#">http://www.nowcoder.com/activation/abcdefg123456.html</a>,
-			激活您的账号!
+			感谢您注册我的网站作品, 这是一封激活邮件, 请点击以下链接激活您的账号!
+		</p>
+		<p>
+			<a th:text="${url}"></a>
+		</p>
+		<p>
+
+
+			若您并未在本站注册账号, 请忽略此邮件
 		</p>
 	</div>
 </body>

@@ -25,6 +25,8 @@ lombok 1.18.24
 
 spring-boot-starter-mail 2.7.2
 
+Apache Commons Lang 3.12.0
+
 初始化:
 
 https://start.spring.io/
