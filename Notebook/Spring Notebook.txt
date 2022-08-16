@@ -49,9 +49,9 @@ bean 对象
     xsi:schemaLocation="http://www.springframework.org/schema/beans
         https://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="..." class="...">  
+    <bean id="..." class="package..."> id是bean的名字, class是bean的类名
         <property name="" value=""/>
-        <property name="" ref=""/>
+        <property name="" ref=""/> 当变量类型是另一个类的时候, 使用ref, 值取bean的id
 
         <property name="">
             <array>

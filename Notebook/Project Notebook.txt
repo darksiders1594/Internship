@@ -12,7 +12,7 @@ E:\project\APP\apache-maven-3.8.6\bin
 
 创建工程
 
-mvn archetype:generate -DgroupId=com.mycompany.app -DartifactId=my-app -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=1.4 -DinteractiveMode=false
+mvn archetype:generate -DgroupId=pers.darksiders.demo -DartifactId=my-app -DarchetypeArtifactId=maven-archetype-quickstart -DarchetypeVersion=1.4 -DinteractiveMode=false
 
 编译
 
@@ -323,7 +323,7 @@ Mapper 配置文件(用于给接口生成实现类)
 
     parameterType 的值取方法参数类型, keyProperty 指定变量的值会存放 insert 自动生成的主键
     <insert id="insertById" parameterType="User" keyProperty="id">
-        insert into user ()
+        insert into user (, )
         values (#{}, #{}) 由于主键是自增长, 无需写入values
     </insert>
 
@@ -342,6 +342,8 @@ Mapper 配置文件(用于给接口生成实现类)
 
 
 --------  项目调试  --------
+
+import org.slf4j.Logger;
 
 private static final Logger logger = LoggerFactory.getLogger(xxx.class);
 
@@ -399,7 +401,111 @@ File -> Settings -> Version Control -> Git -> E:\project\APP\Git\bin\git.exe
 
 
 
+--------  Spring Email  --------
+
+打开邮箱的SMTP
+
+Maven -> Spring Boot Starter Mail
+
+application.properties
+
+-> MailProperties
+
+spring.mail.host=smtp.sina.com
+
+spring.mail.port=465
+
+spring.mail.username=kinopico1018@sina.com
+
+spring.mail.password=
+
+spring.mail.protocol=smtps
+spring.mail.properties.mail.smtp.ssl.enable=true
+
+spring.mail.properties.mail.smtl.auth=true
+spring.mail.properties.mail.smtp.starttls.enable=true
+spring.mail.properties.mail.smtp.starttls.required=true
+
+private JavaMailSender mailSender; (注意这里的 @Autowired(required = false))
+
+@Value("${spring.mail.username}")
+private String from;
+
+public void sendMail(String to, String subject, String content) {
+    try {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+        helper.setFrom(from);
+        helper.setTo(to);
+        helper.setSubject(subject);
+        helper.setText(content, html: true);
+        mailSender.send(helper.getMimeMessage());
+    } catch (MessagingException e) {
+        logger.error("邮件发送失败: " + e.getMessage());
+    }
+
+}
+
+注: 测试类想发送 html 邮件的话, 需要注入TemplateEngine
+
+-> 代码示例
+
+Context context = new Context();
+
+context.setVariable(name: "suername", value: "");
+
+String content = templateEngine.process(template: "mail/", context);
 
 
 
+--------  开发注册页面  --------
 
+前端标签代码复用技巧
+
+th:fragment="aaa"
+
+th:replace="xxx::aaa"
+
+
+maven -> Apache Commons Lang
+
+
+application.properties
+
+-> community
+
+community.path.domain=http://localhost:8080
+
+
+CommunityUtil 工具类
+
+生成随机字符串代码示例: 
+
+public static String generateUUID() {
+    return UUID.randomUUID().toString().replaceAll(regex: "-", replacement: "");
+}
+
+MD5加密代码示例: 
+
+public static String md5(String key) {
+    if (StringUtils.isBlank(key)) {
+        return null;
+    }
+    return DigestUtils.md5DigestAsHex(key.getBytes());
+}
+
+
+完善 UserService
+
+1. 注入 MailClient TemplateEngine domain contextPath
+
+2. 处理空值情况
+
+3. 验证用户
+
+4. 对用户信息初始化, 以及对密码进行安全处理
+
+5. 发送激活邮件
+
+
+对接 LoginController
