@@ -78,6 +78,17 @@ public class UserService implements CommunityConstant {
             return map;
         }
 
+        // 判断用户密码格式合理性
+        if (user.getPassword().length() < 8) {
+            map.put("passwordMsg", "为了您的账号安全, 密码不要小于8位哦");
+            return map;
+        }
+
+        if (user.getPassword().length() > 16) {
+            map.put("passwordMsg", "密码太长啦! 请不要超过16位哦");
+            return map;
+        }
+
         // 对用户密码进行安全处理
         user.setSalt(CommunityUtil.generateUUID().substring(0,5));
         user.setPassword(CommunityUtil.md5(user.getPassword() + user.getSalt()));
