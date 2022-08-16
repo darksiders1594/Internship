@@ -1,7 +1,7 @@
 # Internship
 此仓库用于实习的个人项目作品
 
-项目环境由以下软件搭建:
+# 项目环境由以下软件搭建:
 
 IntelliJ IDEA Ultimate 2019.3.2
 
@@ -13,7 +13,8 @@ Git 2.37.1 64
 
 maven-3.6.1
 
-导入的jar: 
+
+# 导入的jar: 
 
 spring-aspects 5.2.22.RELEASE
 
@@ -27,7 +28,10 @@ spring-boot-starter-mail 2.7.2
 
 Apache Commons Lang 3.12.0
 
-初始化:
+kaptcha 2.3.2
+
+
+# 初始化:
 
 https://start.spring.io/
 
