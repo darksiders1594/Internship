@@ -8,6 +8,7 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 import pers.internship.demo.dao.UserMapper;
 import pers.internship.demo.entity.User;
+import pers.internship.demo.util.CommunityConstant;
 import pers.internship.demo.util.CommunityUtil;
 import pers.internship.demo.util.MailClient;
 
@@ -17,7 +18,7 @@ import java.util.Map;
 import java.util.Random;
 
 @Service
-public class UserService {
+public class UserService implements CommunityConstant {
 
     @Autowired
     private UserMapper userMapper;
@@ -77,9 +78,6 @@ public class UserService {
             return map;
         }
 
-        // 判断两次密码是否一致
-
-
         // 对用户密码进行安全处理
         user.setSalt(CommunityUtil.generateUUID().substring(0,5));
         user.setPassword(CommunityUtil.md5(user.getPassword() + user.getSalt()));
@@ -105,5 +103,23 @@ public class UserService {
         return map;
     }
 
+    public int activation(int userId, String code) {
+        User user = userMapper.selectById(userId);
+
+        if (user == null) {
+            return ACTIVATION_FAILURE;
+        }
+
+        if (user.getStatus() == 1) {
+            return ACTIVATION_REPEAT;
+        }
+
+        if (user.getActivationCode().equals(code)) {
+            userMapper.updateStatus(userId, 1);
+            return ACTIVATION_SUCCESS;
+        } else {
+            return ACTIVATION_FAILURE;
+        }
+    }
 
 }

@@ -3,15 +3,17 @@ package pers.internship.demo.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import pers.internship.demo.entity.User;
 import pers.internship.demo.service.UserService;
+import pers.internship.demo.util.CommunityConstant;
 
 import java.util.Map;
 
 @Controller
-public class LoginController {
+public class LoginController implements CommunityConstant {
 
     @Autowired
     private UserService userService;
@@ -19,6 +21,11 @@ public class LoginController {
     @RequestMapping(path = "/register", method = RequestMethod.GET)
     public String getRegisterPage() {
         return "/site/register.html";
+    }
+
+    @RequestMapping(path = "/login", method = RequestMethod.GET)
+    public String getLoginPage() {
+        return "/site/login.html";
     }
 
     @RequestMapping(path = "/register", method = RequestMethod.POST)
@@ -33,6 +40,28 @@ public class LoginController {
             model.addAttribute("passwordMsg", map.get("passwordMsg"));
             model.addAttribute("emailMsg", map.get("emailMsg"));
             return "/site/register.html";
+        }
+    }
+
+    @RequestMapping(path = "/activation/{userId}/{code}", method = RequestMethod.GET)
+    public String activation(@PathVariable("userId") int userId,
+                             @PathVariable("code") String code,
+                             Model model) {
+        switch (userService.activation(userId, code)) {
+            case ACTIVATION_FAILURE:
+                model.addAttribute("msg", "激活失败, 请检查链接是否有误, 或在网站首页下方二维码联系开发者");
+                model.addAttribute("target", "/index");
+                return "/site/operate-result.html";
+            case ACTIVATION_REPEAT:
+                model.addAttribute("msg", "此链接已失效, 您可能已经激活过该账号, 请尝试直接登录");
+                model.addAttribute("target", "/login");
+                return "/site/operate-result.html";
+            case ACTIVATION_SUCCESS:
+                model.addAttribute("msg", "激活成功! 让我们一起畅所欲言!");
+                model.addAttribute("target", "/login");
+                return "/site/operate-result.html";
+            default:
+                return null;
         }
     }
 

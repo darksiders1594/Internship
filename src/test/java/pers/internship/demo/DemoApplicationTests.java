@@ -65,6 +65,12 @@ class DemoApplicationTests {
         System.out.println("成功更新 " + rows + " 条数据");
     }
 
+    @Test
+    public void testUpdateStatus() {
+        int rows = userMapper.updateStatus(165, 1);
+        System.out.println("成功更新 " + rows + " 条数据");
+    }
+
 // 这是 DiscussPost Select 功能相关的测试用例
     @Autowired
     private DiscussPostMapper discussPostMapper;
