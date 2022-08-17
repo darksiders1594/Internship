@@ -140,12 +140,12 @@ public class UserService implements CommunityConstant {
     }
 
     // 登录凭证
-    public Map<String, Object> login(String userName, String password, int expiredSeconds) {
+    public Map<String, Object> login(String userName, String password, long expiredSeconds) {
         Map<String, Object> map = new HashMap<>();
 
         // 空值处理
         if (StringUtils.isBlank(userName)) {
-            map.put("userNameMsg", "请输入用户名");
+            map.put("userLoginMsg", "请输入用户名");
             return map;
         }
         if (StringUtils.isBlank(password)) {
