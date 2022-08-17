@@ -16,7 +16,7 @@ public class MailTests {
     private MailClient mailClient;
 
     @Autowired
-    TemplateEngine templateEngine = new TemplateEngine();
+    private TemplateEngine templateEngine;
 
     @Test
     public void testSendMail() {
@@ -24,7 +24,7 @@ public class MailTests {
         context.setVariable("username", "darksiders1594");
         String content = templateEngine.process("/mail/activation", context);
 
-        mailClient.sendMail("darksiders1594@gmail.com", "账号激活", content);
+        mailClient.sendMail("1594253369@qq.com", "账号激活", content);
     }
 
 }

@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+import pers.internship.demo.dao.LoginTicketMapper;
 import pers.internship.demo.dao.UserMapper;
+import pers.internship.demo.entity.LoginTicket;
 import pers.internship.demo.entity.User;
 import pers.internship.demo.util.CommunityConstant;
 import pers.internship.demo.util.CommunityUtil;
@@ -27,7 +29,10 @@ public class UserService implements CommunityConstant {
     private MailClient mailClient;
 
     @Autowired
-    private TemplateEngine templateEngine = new TemplateEngine();
+    private TemplateEngine templateEngine;
+
+    @Autowired
+    private LoginTicketMapper loginTicketMapper;
 
     @Value("${demo.path.domain}")
     private String domain;
@@ -114,6 +119,7 @@ public class UserService implements CommunityConstant {
         return map;
     }
 
+    // 激活链接
     public int activation(int userId, String code) {
         User user = userMapper.selectById(userId);
 
@@ -133,4 +139,50 @@ public class UserService implements CommunityConstant {
         }
     }
 
+    // 登录凭证
+    public Map<String, Object> login(String userName, String password, int expiredSeconds) {
+        Map<String, Object> map = new HashMap<>();
+
+        // 空值处理
+        if (StringUtils.isBlank(userName)) {
+            map.put("userNameMsg", "请输入用户名");
+            return map;
+        }
+        if (StringUtils.isBlank(password)) {
+            map.put("passwordMsg", "请输入密码");
+            return map;
+        }
+
+        User user = userMapper.selectByUserName(userName);
+
+        // 校验用户名正确性
+        if (user == null) {
+            map.put("userLoginMsg", "用户名或密码错误");
+            return map;
+        }
+        // 校验用户密码正确性
+        password = CommunityUtil.md5(password + user.getSalt());
+        if (!user.getPassword().equals(password)) {
+            map.put("userLoginMsg", "用户名或密码错误");
+            return map;
+        }
+        // 校验激活状态
+        if (user.getStatus() != 1) {
+            map.put("userLoginMsg", "账号还没有激活哦!");
+            return map;
+        }
+
+        // 生成登录凭证
+        LoginTicket loginTicket = new LoginTicket();
+        loginTicket.setUserId(user.getId());
+        loginTicket.setTicket(CommunityUtil.generateUUID());
+        loginTicket.setStatus(0);
+        loginTicket.setExpired(new Date(System.currentTimeMillis() + expiredSeconds * 1000));
+        loginTicketMapper.insertLoginTicket(loginTicket);
+
+        map.put("ticket", loginTicket.getTicket());
+
+        return map;
+
+    }
 }
