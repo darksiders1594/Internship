@@ -8,13 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.CookieValue;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import pers.internship.demo.entity.User;
 import pers.internship.demo.service.UserService;
 import pers.internship.demo.util.CommunityConstant;
+import pers.internship.demo.util.CommunityUtil;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.Cookie;
@@ -47,6 +45,11 @@ public class LoginController implements CommunityConstant {
     @RequestMapping(path = "/login", method = RequestMethod.GET)
     public String getLoginPage() {
         return "/site/login.html";
+    }
+
+    @RequestMapping(path = "/forget", method = RequestMethod.GET)
+    public String getForgetPage() {
+        return "/site/forget.html";
     }
 
     @RequestMapping(path = "/register", method = RequestMethod.POST)
@@ -140,4 +143,39 @@ public class LoginController implements CommunityConstant {
         userService.logout(ticket);
         return "redirect:/login";
     }
+
+    @RequestMapping(path = "/forget/code", method = RequestMethod.GET)
+    @ResponseBody
+    public void sendForgetMail(@RequestParam("email") String email, HttpSession session) {
+        if (StringUtils.isBlank(email)) {
+            return;
+        }
+        String code = CommunityUtil.generateUUID().substring(0,6).toUpperCase();
+        session.setAttribute(email, code);
+        session.setMaxInactiveInterval(15 * 60);
+        userService.sendCodeEmail(email, code);
+    }
+
+    @RequestMapping(path = "/forget", method = RequestMethod.POST)
+    public String forget(Model model, String email, String password, String code, HttpSession session) {
+
+        String sessionCode = (String)session.getAttribute(email);
+        if (StringUtils.isBlank(code) || StringUtils.isBlank(sessionCode) || !sessionCode.equalsIgnoreCase(code)) {
+            model.addAttribute("codeMsg", "验证码错误");
+            return "/site/forget.html";
+        }
+
+        Map<String, Object> map = userService.updatePassword(email, password);
+        if (map != null) {
+            model.addAttribute("emailMsg", map.get("emailMsg"));
+            model.addAttribute("passwordMsg", map.get("passwordMsg"));
+            return "/site/forget.html";
+        } else {
+            model.addAttribute("msg", "密码修改成功! 快去试试登录吧!");
+            model.addAttribute("target", "/login");
+            return "/site/operate-result.html";
+        }
+
+    }
+
 }

@@ -190,4 +190,59 @@ public class UserService implements CommunityConstant {
         loginTicketMapper.updateStatus(ticket, 1);
     }
 
+    // 发送验证码邮件
+    public void sendCodeEmail(String email, String code) {
+
+        // 空值处理
+        if (StringUtils.isBlank(email)) {
+            return;
+        }
+        if (StringUtils.isBlank(code)) {
+            return;
+        }
+        User user = userMapper.selectByEmail(email);
+        if (user == null) {
+            return;
+        }
+
+        // 发送激活邮件
+        Context context = new Context();
+        context.setVariable("username", user.getUserName());
+        context.setVariable("code", code);
+        String content = templateEngine.process("/mail/forget.html", context);
+        mailClient.sendMail(user.getEmail(), "忘记密码", content);
+
+    }
+
+    // 修改密码
+    public Map<String, Object> updatePassword(String email, String password) {
+        Map<String, Object> map = new HashMap<>();
+        // 空值处理
+        if (StringUtils.isBlank(email)) {
+            map.put("emailMsg", "请输入邮箱");
+            return map;
+        }
+        if (StringUtils.isBlank(password)) {
+            map.put("passwordMsg", "请输入新的密码");
+            return map;
+        }
+        User user = userMapper.selectByEmail(email);
+        if (user == null) {
+            map.put("emailMsg", "邮箱异常, 请联系网站开发者获取帮助");
+            return map;
+        }
+        if (password.length() < 8) {
+            map.put("passwordMsg", "为了您的账号安全, 密码不要小于8位哦");
+            return map;
+        }
+        if (password.length() > 16) {
+            map.put("passwordMsg", "密码太长啦! 请不要超过16位哦");
+            return map;
+        }
+        password = CommunityUtil.md5(password + user.getSalt());
+        userMapper.updatePassword(user.getId(), password);
+
+        return null;
+    }
+
 }
