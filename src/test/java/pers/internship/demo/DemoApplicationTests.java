@@ -5,8 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import pers.internship.demo.dao.DiscussPostMapper;
+import pers.internship.demo.dao.LoginTicketMapper;
 import pers.internship.demo.dao.UserMapper;
 import pers.internship.demo.entity.DiscussPost;
+import pers.internship.demo.entity.LoginTicket;
 import pers.internship.demo.entity.User;
 
 import java.util.Date;
@@ -89,6 +91,34 @@ class DemoApplicationTests {
         System.out.println(rows);
     }
 
+// 这是 LoginTicket Insert 功能相关的测试用例
+    @Autowired
+    private LoginTicketMapper loginTicketMapper;
 
+    @Test
+    public void testInsertLoginTicket() {
+        LoginTicket loginTicket = new LoginTicket();
+        loginTicket.setUserId(1);
+        loginTicket.setTicket("test");
+        loginTicket.setStatus(0);
+        loginTicket.setExpired(new Date());
+        int rows = loginTicketMapper.insertLoginTicket(loginTicket);
+        System.out.println("成功增加 " + rows + " 条数据");
+    }
 
+// 这是 LoginTicket Insert 功能相关的测试用例
+    @Test
+    public void testSelectByTicket() {
+        LoginTicket loginTicket = loginTicketMapper.selectByTicket("test");
+
+        System.out.println(loginTicket.toString());
+    }
+
+// 这是 LoginTicket Update 功能相关的测试用例
+    @Test
+    public void testUpdateTicketStatus() {
+        int rows = loginTicketMapper.updateStatus("test", 1);
+
+        System.out.println("成功更新 " + rows + " 条数据");
+    }
 }
