@@ -10,6 +10,7 @@ function check_data() {
 		$("#confirm-password").addClass("is-invalid");
 		return false;
 	}
+	$("#submitBtn").css("pointer-events","none")
 	return true;
 }
 
