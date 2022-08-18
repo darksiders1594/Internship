@@ -245,4 +245,8 @@ public class UserService implements CommunityConstant {
         return null;
     }
 
+    public LoginTicket findLoginTicket(String ticket) {
+        return loginTicketMapper.selectByTicket(ticket);
+    }
+
 }
