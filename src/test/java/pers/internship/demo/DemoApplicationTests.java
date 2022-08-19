@@ -73,6 +73,12 @@ class DemoApplicationTests {
         System.out.println("成功更新 " + rows + " 条数据");
     }
 
+    @Test
+    public void testUpdateHeader() {
+        int rows = userMapper.updateHeaderUrl(149, "/img/header/6.jpg");
+        System.out.println("成功更新 " + rows + " 条数据");
+    }
+
 // 这是 DiscussPost Select 功能相关的测试用例
     @Autowired
     private DiscussPostMapper discussPostMapper;

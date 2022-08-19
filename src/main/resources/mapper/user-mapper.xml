@@ -54,4 +54,10 @@
         where id = #{id}
     </update>
 
+    <update id="updateHeaderUrl">
+        update user
+        set header_url = #{headerUrl}
+        where id = #{userId}
+    </update>
+
 </mapper>

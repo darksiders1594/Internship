@@ -321,4 +321,13 @@ public class UserService implements CommunityConstant {
         return loginTicketMapper.selectByTicket(ticket);
     }
 
+    /**
+     * 该方法用于更新用户的头像链接
+     * @param userId 用户主键 ID
+     * @param headerUrl 头像链接
+     * @return 返回数据更新条数
+     */
+    public int updateHeaderUrl(int userId, String headerUrl) {
+        return userMapper.updateHeaderUrl(userId, headerUrl);
+    }
 }
