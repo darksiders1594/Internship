@@ -270,7 +270,7 @@ public class UserService implements CommunityConstant {
      * @param password 新密码
      * @return 返回以 Map 类型存放的错误信息
      */
-    public Map<String, Object> updatePassword(String email, String password) {
+    public Map<String, Object> updatePasswordByEmail(String email, String password) {
         Map<String, Object> map = new HashMap<>();
 
         // 空值处理
@@ -330,4 +330,39 @@ public class UserService implements CommunityConstant {
     public int updateHeaderUrl(int userId, String headerUrl) {
         return userMapper.updateHeaderUrl(userId, headerUrl);
     }
+
+    /**
+     * 该方法根据校验旧密码以修改新密码
+     * @param oldPassword 原密码
+     * @param newPassword 新密码
+     * @param user 用户的实体类对象
+     * @return 返回以 Map 类型存放的错误信息
+     */
+    public Map<String, Object> updatePassword(String oldPassword, String newPassword, User user) {
+        Map<String, Object> map = new HashMap<>();
+
+        // 判断用户新密码格式合理性
+        if (newPassword.length() < 8) {
+            map.put("newPasswordMsg", "为了您的账号安全, 新密码不要小于8位哦");
+            return map;
+        }
+        if (newPassword.length() > 16) {
+            map.put("newPasswordMsg", "密码太长啦! 请不要超过16位哦");
+            return map;
+        }
+
+        // 原密码正确性校验
+        oldPassword = CommunityUtil.md5(oldPassword + user.getSalt());
+        if (!user.getPassword().equals(oldPassword)) {
+            map.put("oldPasswordMsg", "原密码错误!");
+            return map;
+        }
+
+        // 在数据库中更新密码
+        newPassword = CommunityUtil.md5(newPassword + user.getSalt());
+        userMapper.updatePassword(user.getId(), newPassword);
+
+        return null;
+    }
+
 }

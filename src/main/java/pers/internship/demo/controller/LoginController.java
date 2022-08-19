@@ -165,7 +165,7 @@ public class LoginController implements CommunityConstant {
             return "/site/forget.html";
         }
 
-        Map<String, Object> map = userService.updatePassword(email, password);
+        Map<String, Object> map = userService.updatePasswordByEmail(email, password);
         if (map != null) {
             model.addAttribute("emailMsg", map.get("emailMsg"));
             model.addAttribute("passwordMsg", map.get("passwordMsg"));

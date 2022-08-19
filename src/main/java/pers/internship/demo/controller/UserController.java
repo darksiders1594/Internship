@@ -22,6 +22,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/user")
@@ -131,4 +133,34 @@ public class UserController {
             logger.error("头像获取失败: " + e.getMessage());
         }
     }
+
+    @RequestMapping(path = "/update-password", method = RequestMethod.POST)
+    public String updatePassword(String oldPassword, String newPassword, Model model) {
+        // 空值处理
+        User user = hostHolder.getUser();
+        if (user == null) {
+            model.addAttribute("oldPasswordMsg", "请先登录哦!");
+            return "/site/setting.html";
+        }
+        if (oldPassword == null) {
+            model.addAttribute("oldPasswordMsg", "请输入原密码");
+            return "/site/setting.html";
+        }
+        if (newPassword == null) {
+            model.addAttribute("newPasswordMsg", "请输入新密码");
+            return "/site/setting.html";
+        }
+
+        Map<String, Object> map = userService.updatePassword(oldPassword, newPassword, user);
+
+        if (map == null || map.isEmpty()) {
+            return "redirect:/logout";
+        } else {
+            model.addAttribute("oldPasswordMsg", map.get("oldPasswordMsg"));
+            model.addAttribute("newPasswordMsg", map.get("newPasswordMsg"));
+            return "/site/setting.html";
+        }
+
+    }
+
 }
