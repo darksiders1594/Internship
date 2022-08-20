@@ -10,19 +10,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.multipart.MultipartFile;
+import pers.internship.demo.annotation.LoginRequired;
 import pers.internship.demo.entity.User;
 import pers.internship.demo.service.UserService;
 import pers.internship.demo.util.CommunityUtil;
 import pers.internship.demo.util.HostHolder;
 
-import javax.imageio.ImageIO;
+
 import javax.servlet.http.HttpServletResponse;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.HashMap;
 import java.util.Map;
 
 @Controller
@@ -46,11 +45,13 @@ public class UserController {
     @Value("${demo.path.upload}")
     private String uploadPath;
 
+    @LoginRequired
     @RequestMapping(path = "/setting", method = RequestMethod.GET)
     public String getSettingPage() {
         return "/site/setting.html";
     }
 
+    @LoginRequired
     @RequestMapping(path = "/upload", method = RequestMethod.POST)
     public String uploadHeaderUrl(MultipartFile headerImage, Model model) {
 
@@ -134,6 +135,7 @@ public class UserController {
         }
     }
 
+    @LoginRequired
     @RequestMapping(path = "/update-password", method = RequestMethod.POST)
     public String updatePassword(String oldPassword, String newPassword, Model model) {
         // 空值处理
