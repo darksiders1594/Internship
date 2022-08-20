@@ -1,5 +1,22 @@
 html {
 	height: 100%;
+	overflow-y: scroll; // 兼容ie8
+	/*overflow-y: overlay; // 目前仅兼容 chrome*/
+}
+
+
+:root {
+	height: 100%;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+:root body {
+	background: #eee;
+	font-family: arial, STHeiti, 'Microsoft YaHei', \5b8b\4f53;
+	font-size: 14px;
+	height: 100%;
+	position: absolute;
 }
 
 body {
@@ -7,7 +24,17 @@ body {
 	font-family: arial, STHeiti, 'Microsoft YaHei', \5b8b\4f53;
 	font-size: 14px;
 	height: 100%;
+	width: 100vw;
+	/*overflow: hidden;*/
 }
+
+
+/*body {*/
+/*	background: #eee;*/
+/*	font-family: arial, STHeiti, 'Microsoft YaHei', \5b8b\4f53;*/
+/*	font-size: 14px;*/
+/*	height: 100%;*/
+/*}*/
 
 .nk-container {
 	position: relative;
@@ -20,13 +47,13 @@ body {
 	padding: 0;
 }
 
-header .navbar-brand {
-	background: url('http://static.nowcoder.com/images/res/logo/logo-v3.png') no-repeat;
-	background-size: 147px 42px;
-	width: 147px;
-	height: 42px;
-	margin: 5px 15px 5px 0;
-}
+/*header .navbar-brand {*/
+/*	background: url('http://') no-repeat;*/
+/*	background-size: 147px 42px;*/
+/*	width: 147px;*/
+/*	height: 42px;*/
+/*	margin: 5px 15px 5px 0;*/
+/*}*/
 
 header .navbar {
 	padding: 5px 0;
