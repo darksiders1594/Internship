@@ -1,4 +1,4 @@
-var CONTEXT_PATH = "/demo";
+var CONTEXT_PATH = "";
 
 window.alert = function(message) {
 	if(!$(".alert-box").length) {

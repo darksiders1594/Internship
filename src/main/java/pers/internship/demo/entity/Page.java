@@ -46,6 +46,18 @@ public class Page {
     }
 
     /**
+     * 该方法用于获取总页数
+     * @return 返回一个整数类型
+     */
+    public int getTotal() {
+        if (rows % limit == 0 && rows != 0) {
+            return rows / limit;
+        } else {
+            return rows / limit + 1;
+        }
+    }
+
+    /**
      * 该方法用于获取起始行
      * @return 返回一个整数类型
      */
@@ -55,18 +67,6 @@ public class Page {
             return (total - 1) * limit;
         }
         return (current - 1) * limit;
-    }
-
-    /**
-     * 该方法用于获取总页数
-     * @return 返回一个整数类型
-     */
-    public int getTotal() {
-        if (rows % limit == 0) {
-            return rows / limit;
-        } else {
-            return rows / limit + 1;
-        }
     }
 
     /**

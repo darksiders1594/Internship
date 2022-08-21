@@ -13,6 +13,7 @@ import pers.internship.demo.entity.User;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 
 @SpringBootTest
@@ -25,7 +26,7 @@ class DemoApplicationTests {
 
     @Test
     public void testSelectById() {
-        User user = userMapper.selectById(101);
+        User user = userMapper.selectById(1001);
         System.out.println(user);
     }
 
@@ -37,27 +38,30 @@ class DemoApplicationTests {
 
     @Test
     public void testSelectByEmail() {
-        User user = userMapper.selectByEmail("nowcoder101@sina.com");
+        User user = userMapper.selectByEmail("1594253369@qq.com");
         System.out.println(user);
     }
 
 // 这是 User Insert 功能相关的测试用例
     @Test
     public void testInsertUser() {
-        User user = new User();
+        for (int index = 10; index <= 20; index++) {
+            String name = "Robot 0" + index;
+            User user = new User();
 
-        user.setUserName("Darksiders");
-        user.setPassword("1594253369");
-        user.setSalt("123456");
-        user.setEmail("darksiders1594@gmail.com");
-        user.setType(2);
-        user.setStatus(1);
-        user.setActivationCode("");
-        user.setHeaderUrl("http://images.nowcoder.com/head/771t.png");
-        user.setCreateTime(new Date());
+            user.setUserName(name);
+            user.setPassword("ec325f3231baca46f9c7eae56c371a79");
+            user.setSalt("d263b");
+            user.setEmail("robot0" + index + "@test.pers");
+            user.setType(0);
+            user.setStatus(1);
+            user.setActivationCode(name);
+            user.setHeaderUrl(String.format("/img/header/%d.jpg", new Random().nextInt(10)));
+            user.setCreateTime(new Date());
 
-        int rows = userMapper.insertUser(user);
-        System.out.println("成功增加 " + rows + " 条数据");
+            int rows = userMapper.insertUser(user);
+            System.out.println("成功增加 " + rows + " 条数据");
+        }
     }
 
 // 这是 User Update 功能相关的测试用例

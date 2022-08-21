@@ -25,6 +25,12 @@ public class HomeController {
     @Autowired
     private DiscussPostService discussPostService;
 
+    @RequestMapping(path = "/", method = RequestMethod.GET)
+    public String root() {
+        return "forward:/index";
+    }
+
+
     @RequestMapping(path = "/index", method = RequestMethod.GET)
     public String getIndexPage(Model model, Page page) {
         page.setRows(discussPostService.findDiscussPostRows(0));
