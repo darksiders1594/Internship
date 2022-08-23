@@ -1,22 +1,7 @@
+/* 解决滚动条占位 最优方案 */
 html {
 	height: 100%;
-	overflow-y: scroll; // 兼容ie8
-	/*overflow-y: overlay; // 目前仅兼容 chrome*/
-}
-
-
-:root {
-	height: 100%;
-	overflow-y: auto;
-	overflow-x: hidden;
-}
-
-:root body {
-	background: #eee;
-	font-family: arial, STHeiti, 'Microsoft YaHei', \5b8b\4f53;
-	font-size: 14px;
-	height: 100%;
-	position: absolute;
+	overflow-y: overlay; // 目前仅兼容 chrome
 }
 
 body {
@@ -24,29 +9,86 @@ body {
 	font-family: arial, STHeiti, 'Microsoft YaHei', \5b8b\4f53;
 	font-size: 14px;
 	height: 100%;
-	width: 100vw;
-	/*overflow: hidden;*/
 }
 
+/* 解决滚动条占位 ie8 兼容方案 */
+/*html {*/
+/*	height: 100%;*/
+/*	overflow-y: scroll; // 兼容ie8*/
+/*	!*overflow-y: overlay; // 目前仅兼容 chrome*!*/
+/*}*/
+
+/*:root {*/
+/*	height: 100%;*/
+/*	overflow-y: auto;*/
+/*	overflow-x: hidden;*/
+/*}*/
+
+/*:root body {*/
+/*	background: #eee;*/
+/*	font-family: arial, STHeiti, 'Microsoft YaHei', \5b8b\4f53;*/
+/*	font-size: 14px;*/
+/*	height: 100%;*/
+/*	position: absolute;*/
+/*}*/
 
 /*body {*/
 /*	background: #eee;*/
 /*	font-family: arial, STHeiti, 'Microsoft YaHei', \5b8b\4f53;*/
 /*	font-size: 14px;*/
 /*	height: 100%;*/
+/*	width: 100vw;*/
 /*}*/
 
-.nk-container {
-	position: relative;
-	height: auto;
-	min-height: 100%;
+/* 适配 PC 端屏幕 */
+@media (min-width: 960px) {
+	.darksiders-container {
+		position: relative;
+		height: auto;
+		min-height: 100%;
+	}
+	.container {
+		width: 960px;
+		padding: 0;
+	}
 }
 
-.container {
-	width: 960px;
-	padding: 0;
+/* 适配手机端屏幕 */
+@media (max-width: 960px) {
+	.darksiders-container {
+		position: relative;
+		height: auto;
+		min-height: 100%;
+		min-width: 610px;
+	}
+	.container {
+		max-width: 720px;
+		min-width: 610px;
+		padding: 0;
+	}
 }
 
+/* 优化搜索栏布局 */
+.form-inline .col-10 {
+	max-width: 220px;
+	min-width: 220px;
+}
+
+.form-inline .col-2 {
+	max-width: 58px;
+	min-width: 58px;
+	margin-right: 0.5rem
+}
+
+/*临时 LOGO 方案*/
+header .navbar-brand {
+	display: block;
+	padding-top: 0.5rem;
+	padding-bottom: 0.5rem;
+	padding-left: 1rem;
+}
+
+/*正式 LOGO 方案*/
 /*header .navbar-brand {*/
 /*	background: url('http://') no-repeat;*/
 /*	background-size: 147px 42px;*/

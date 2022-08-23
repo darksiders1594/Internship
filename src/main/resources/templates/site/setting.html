@@ -10,14 +10,14 @@
 	<title>实习作品-账号设置</title>
 </head>
 <body>
-	<div class="nk-container">
+	<div class="darksiders-container">
 		<!-- 头部 -->
 		<header class="bg-dark sticky-top">
 			<div class="container">
 				<!-- 导航 -->
 				<nav class="navbar navbar-expand-lg navbar-dark">
 					<!-- logo -->
-					<a class="navbar-brand" href="#"></a>
+					<a class="navbar-brand" th:href="@{/index}">Welcome</a>
 					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 						<span class="navbar-toggler-icon"></span>
 					</button>
@@ -50,9 +50,9 @@
 							</li>
 						</ul>
 						<!-- 搜索 -->
-						<form class="form-inline my-2 my-lg-0" action="">
-							<input class="form-control mr-sm-2" type="search" aria-label="Search" />
-							<button class="btn btn-outline-light my-2 my-sm-0" type="submit">搜索</button>
+						<form class="form-inline ml-2 my-0 form-row" action="">
+							<input class="form-control mr-2 col-10" type="search" aria-label="Search" />
+							<button class="btn btn-outline-light my-0 col-2" type="submit">搜索</button>
 						</form>
 					</div>
 				</nav>
@@ -66,20 +66,20 @@
 				<h6 class="text-left text-info border-bottom pb-2">上传头像</h6>
 				<form class="mt-5" method="post" enctype="multipart/form-data" th:action="@{/user/upload}">
 					<div class="form-group row mt-4">
-						<label for="head-image" class="col-sm-2 col-form-label text-right">选择头像:</label>
-						<div class="col-sm-10">
+						<label for="head-image" class="col-2 col-form-label text-right">选择头像:</label>
+						<div class="col-10">
 							<div class="custom-file">
-								<input type="file"
+								<input type="file" onchange="handleChange(this)"
 									   th:class="|custom-file-input ${error != null ? 'is-invalid':''}|"
 									   id="head-image" name="headerImage" lang="es" required="">
-								<label class="custom-file-label" for="head-image" data-browse="文件">选择一张图片</label>
+								<label class="custom-file-label" for="head-image" data-browse="文件">选择一张图片, 大小不要超过1M哦</label>
 								<div class="invalid-feedback" th:text="${error}"></div>
 							</div>		
 						</div>
 					</div>
 					<div class="form-group row mt-4">
-						<div class="col-sm-2"></div>
-						<div class="col-sm-10 text-center">
+						<div class="col-2"></div>
+						<div class="col-10 text-center">
 							<button type="submit" class="btn btn-info text-white form-control">立即上传</button>
 						</div>
 					</div>
@@ -88,8 +88,8 @@
 				<h6 class="text-left text-info border-bottom pb-2 mt-5">修改密码</h6>
 				<form id="password-from" class="mt-5" method="post" th:action="@{/user/update-password}">
 					<div class="form-group row mt-4">
-						<label for="old-password" class="col-sm-2 col-form-label text-right">原密码:</label>
-						<div class="col-sm-10">
+						<label for="old-password" class="col-2 col-form-label text-right">原密码:</label>
+						<div class="col-10">
 							<input type="password"
 								   th:class="|form-control ${oldPasswordMsg != null ? 'is-invalid':''}|"
 								   th:value="${param.oldPassword}"
@@ -98,8 +98,8 @@
 						</div>
 					</div>
 					<div class="form-group row mt-4">
-						<label for="new-password" class="col-sm-2 col-form-label text-right">新密码:</label>
-						<div class="col-sm-10">
+						<label for="new-password" class="col-2 col-form-label text-right">新密码:</label>
+						<div class="col-10">
 							<input type="password"
 								   th:class="|form-control ${newPasswordMsg != null ? 'is-invalid':''}|"
 								   th:value="${param.newPassword}"
@@ -108,8 +108,8 @@
 						</div>
 					</div>
 					<div class="form-group row mt-4">
-						<label for="confirm-password" class="col-sm-2 col-form-label text-right">确认密码:</label>
-						<div class="col-sm-10">
+						<label for="confirm-password" class="col-2 col-form-label text-right">确认密码:</label>
+						<div class="col-10">
 							<input type="password" class="form-control" id="confirm-password" placeholder="再次输入新密码!" required>
 							<div class="invalid-feedback">
 								两次输入的密码不一致!
@@ -117,8 +117,8 @@
 						</div>
 					</div>				
 					<div class="form-group row mt-4">
-						<div class="col-sm-2"></div>
-						<div class="col-sm-10 text-center">
+						<div class="col-2"></div>
+						<div class="col-10 text-center">
 							<button id="submitBtn" type="submit" class="btn btn-info text-white form-control">立即保存</button>
 						</div>
 					</div>
@@ -200,5 +200,18 @@
 			bsCustomFileInput.init();
 		});
 	</script>
+
+	<script>
+		function handleChange(file) {
+			var fileSize = file.files[0].size;
+			if (fileSize > 1024 * 1024) {
+				alert("文件大小不要超过1MB哦!");
+				document.getElementById('head-image').value='';
+				return false;
+			}
+			return true;
+		}
+	</script>
+
 </body>
 </html>

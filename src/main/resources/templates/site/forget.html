@@ -10,14 +10,14 @@
 	<title>实习作品-忘记密码</title>
 </head>
 <body>
-	<div class="nk-container">
+	<div class="darksiders-container">
 		<!-- 头部 -->
 		<header class="bg-dark sticky-top">
 			<div class="container">
 				<!-- 导航 -->
 				<nav class="navbar navbar-expand-lg navbar-dark">
 					<!-- logo -->
-					<a class="navbar-brand" href="#"></a>
+					<a class="navbar-brand" th:href="@{/index}">Welcome</a>
 					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 						<span class="navbar-toggler-icon"></span>
 					</button>
@@ -50,9 +50,9 @@
 							</li>
 						</ul>
 						<!-- 搜索 -->
-						<form class="form-inline my-2 my-lg-0" action="">
-							<input class="form-control mr-sm-2" type="search" aria-label="Search" />
-							<button class="btn btn-outline-light my-2 my-sm-0" type="submit">搜索</button>
+						<form class="form-inline ml-2 my-0 form-row" action="">
+							<input class="form-control mr-2 col-10" type="search" aria-label="Search" />
+							<button class="btn btn-outline-light my-0 col-2" type="submit">搜索</button>
 						</form>
 					</div>
 				</nav>
@@ -64,8 +64,8 @@
 			<div class="container pl-5 pr-5 pt-3 pb-3 mt-3 mb-3">
 				<form class="mt-5" method="post" th:action="@{/forget}">
 					<div class="form-group row">
-						<label for="your-email" class="col-sm-2 col-form-label text-right">邮箱:</label>
-						<div class="col-sm-10">
+						<label for="your-email" class="col-2 col-form-label text-right">邮箱:</label>
+						<div class="col-10">
 							<input type="email"
 								   th:class="|form-control ${emailMsg != null ? 'is-invalid':''}|"
 								   th:value="${param.email}"
@@ -74,21 +74,21 @@
 						</div>
 					</div>
 					<div class="form-group row mt-4">
-						<label for="verifycode" class="col-sm-2 col-form-label text-right">验证码:</label>
-						<div class="col-sm-6">
+						<label for="verifycode" class="col-2 col-form-label text-right">验证码:</label>
+						<div class="col-6">
 							<input type="text"
 								   th:class="|form-control ${codeMsg != null ? 'is-invalid':''}|"
 								   th:value="${param.code}"
 								   id="verifycode" name="code" placeholder="请输入验证码!">
 							<div class="invalid-feedback" th:text="${codeMsg}"></div>
 						</div>
-						<div class="col-sm-4">
+						<div class="col-4">
 							<a href="#" id="verifyCodeBtn" class="btn btn-info form-control">获取验证码</a>
 						</div>
 					</div>	
 					<div class="form-group row mt-4">
-						<label for="your-password" class="col-sm-2 col-form-label text-right">新密码:</label>
-						<div class="col-sm-10">
+						<label for="your-password" class="col-2 col-form-label text-right">新密码:</label>
+						<div class="col-10">
 							<input type="password"
 								   th:class="|form-control ${passwordMsg != null ? 'is-invalid':''}|"
 								   th:value="${param.password}"
@@ -97,8 +97,8 @@
 						</div>
 					</div>							
 					<div class="form-group row mt-4">
-						<div class="col-sm-2"></div>
-						<div class="col-sm-10 text-center">
+						<div class="col-2"></div>
+						<div class="col-10 text-center">
 							<button id="submitBtn" type="submit" class="btn btn-info text-white form-control">重置密码</button>
 						</div>
 					</div>

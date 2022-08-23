@@ -10,14 +10,14 @@
 	<title>实习作品-注册</title>
 </head>
 <body>
-	<div class="nk-container">
+	<div class="darksiders-container">
 		<!-- 头部 -->
 		<header class="bg-dark sticky-top">
 			<div class="container">
 				<!-- 导航 -->
 				<nav class="navbar navbar-expand-lg navbar-dark">
 					<!-- logo -->
-					<a class="navbar-brand" href="#"></a>
+					<a class="navbar-brand" th:href="@{/index}">Welcome</a>
 					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 						<span class="navbar-toggler-icon"></span>
 					</button>
@@ -50,9 +50,9 @@
 							</li>
 						</ul>
 						<!-- 搜索 -->
-						<form class="form-inline my-2 my-lg-0" action="">
-							<input class="form-control mr-sm-2" type="search" aria-label="Search" />
-							<button class="btn btn-outline-light my-2 my-sm-0" type="submit">搜索</button>
+						<form class="form-inline ml-2 my-0 form-row" action="">
+							<input class="form-control mr-2 col-10" type="search" aria-label="Search" />
+							<button class="btn btn-outline-light my-0 col-2" type="submit">搜索</button>
 						</form>
 					</div>
 				</nav>
@@ -65,8 +65,8 @@
 				<h3 class="text-center text-info border-bottom pb-3">注&nbsp;&nbsp;册</h3>
 				<form class="mt-5" method="post" th:action="@{/register}">
 					<div class="form-group row">
-						<label for="username" class="col-sm-2 col-form-label text-right">账号:</label>
-						<div class="col-sm-10">
+						<label for="username" class="col-2 col-form-label text-right">账号:</label>
+						<div class="col-10">
 							<input type="text"
 								   th:class="|form-control ${userNameMsg != null ? 'is-invalid':''}|"
 								   th:value="${user != null ? user.userName : ''}"
@@ -75,8 +75,8 @@
 						</div>
 					</div>
 					<div class="form-group row mt-4">
-						<label for="password" class="col-sm-2 col-form-label text-right">密码:</label>
-						<div class="col-sm-10">
+						<label for="password" class="col-2 col-form-label text-right">密码:</label>
+						<div class="col-10">
 							<input type="password"
 								   th:class="|form-control ${passwordMsg != null ? 'is-invalid':''}|"
 								   th:value="${user != null ? user.password : ''}"
@@ -85,8 +85,8 @@
 						</div>
 					</div>
 					<div class="form-group row mt-4">
-						<label for="confirm-password" class="col-sm-2 col-form-label text-right">确认密码:</label>
-						<div class="col-sm-10">
+						<label for="confirm-password" class="col-2 col-form-label text-right">确认密码:</label>
+						<div class="col-10">
 							<input type="password" class="form-control"
 								   th:value="${user != null ? user.password : ''}"
 								   id="confirm-password" placeholder="请再次输入密码!" required>
@@ -96,8 +96,8 @@
 						</div>
 					</div>
 					<div class="form-group row">
-						<label for="email" class="col-sm-2 col-form-label text-right">邮箱:</label>
-						<div class="col-sm-10">
+						<label for="email" class="col-2 col-form-label text-right">邮箱:</label>
+						<div class="col-10">
 							<input type="email"
 								   th:class="|form-control ${emailMsg != null ? 'is-invalid':''}|"
 								   th:value="${user != null ? user.email : ''}"
@@ -106,8 +106,8 @@
 						</div>
 					</div>
 					<div class="form-group row mt-4">
-						<div class="col-sm-2"></div>
-						<div class="col-sm-10 text-center">
+						<div class="col-2"></div>
+						<div class="col-10 text-center">
 							<button id="submitBtn" type="submit" class="btn btn-info text-white form-control">立即注册</button>
 						</div>
 					</div>

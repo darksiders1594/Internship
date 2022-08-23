@@ -8,15 +8,15 @@
 	<link rel="stylesheet" th:href="@{/css/global.css}" />
 	<title>实习作品-首页</title>
 </head>
-<body>	
-	<div class="nk-container">
+<body>
+	<div class="darksiders-container">
 		<!-- 头部 -->
 		<header class="bg-dark sticky-top">
 			<div class="container">
 				<!-- 导航 -->
-				<nav class="navbar navbar-expand-lg navbar-dark">
+				<nav class="navbar navbar-expand-md navbar-dark">
 					<!-- logo -->
-					<a class="navbar-brand" href="#"></a>
+					<a class="navbar-brand" th:href="@{/index}">Welcome</a>
 					<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
 						<span class="navbar-toggler-icon"></span>
 					</button>
@@ -49,9 +49,9 @@
 							</li>
 						</ul>
 						<!-- 搜索 -->
-						<form class="form-inline my-2 my-lg-0" action="">
-							<input class="form-control mr-sm-2" type="search" aria-label="Search" />
-							<button class="btn btn-outline-light my-2 my-sm-0" type="submit">搜索</button>
+						<form class="form-inline ml-2 my-0 form-row" action="">
+							<input class="form-control mr-2 col-10" type="search" aria-label="Search" />
+							<button class="btn btn-outline-light my-0 col-2" type="submit">搜索</button>
 						</form>
 					</div>
 				</nav>
@@ -115,7 +115,7 @@
 						</div>
 					</div>
 				</div>
-				
+
 				<!-- 帖子列表 -->
 				<ul class="list-unstyled">
 					<li class="media pb-3 pt-3 mb-3 border-bottom" th:each="map:${discussPosts}">
@@ -136,7 +136,7 @@
 									<li class="d-inline ml-2">回帖 0</li>
 								</ul>
 							</div>
-						</div>						
+						</div>
 					</li>
 
 				</ul>
